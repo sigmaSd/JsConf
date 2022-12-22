@@ -1,14 +1,15 @@
-import { stringify } from "https://deno.land/std@0.170.0/encoding/toml.ts";
-import { ensureDir } from "https://deno.land/std@0.170.0/fs/ensure_dir.ts";
-import * as path from "https://deno.land/std@0.170.0/path/mod.ts";
-import configDir from "https://deno.land/x/dir@1.5.1/config_dir/mod.ts";
-import { Command } from "https://deno.land/x/cliffy@v0.25.6/command/mod.ts";
-import { Select } from "https://deno.land/x/cliffy@v0.25.5/prompt/select.ts";
+import { JsConfig } from "./api.ts";
 import {
+  Command,
+  configDir,
   Confirm,
+  ensureDir,
   Input,
+  path,
   prompt,
-} from "https://deno.land/x/cliffy@v0.25.5/prompt/mod.ts";
+  Select,
+  stringify,
+} from "./deps.ts";
 
 async function main() {
   const command = await new Command()
@@ -42,24 +43,14 @@ async function main() {
     config = new URL("file:///" + configFile);
   }
 
-  // deno-lint-ignore no-explicit-any
-  const jsConfig: { config?: () => any; languages?: () => any } = await import(
-    config.href
-  );
+  const jsConfig: JsConfig = await import(config.href).then((m) => m.default);
 
-  let configToml: string | null = null;
-  let languagesToml: string | null = null;
-
-  if (jsConfig.config) {
-    configToml = stringify(jsConfig.config());
-    console.log(`%cconfig.toml`, "color:blue");
+  const tomlConfigs = [];
+  for (const config of jsConfig.config) {
+    const configToml = stringify(config.fn());
+    tomlConfigs.push({ name: config.name, toml: configToml });
+    console.log(`%c${config.name}`, "color:blue");
     console.log(configToml);
-  }
-
-  if (jsConfig.languages) {
-    languagesToml = stringify(jsConfig.languages());
-    console.log(`%clanguages.toml`, "color:blue");
-    console.log(languagesToml);
   }
 
   if (
@@ -83,31 +74,18 @@ async function main() {
       await Deno.mkdir(configPath);
     }
 
-    console.log(
-      `%cSaving new configuration to ${configPath}`,
-      "color: yellow",
-    );
-    if (configToml) {
-      await Deno.writeTextFile(
-        path.join(configPath, "config.toml"),
-        configToml,
+    for (const config of tomlConfigs) {
+      const destPath = path.join(configPath, config.name);
+      console.log(
+        `%cSaving new configuration to ${destPath}`,
+        "color: yellow",
       );
-    }
-    if (languagesToml) {
       await Deno.writeTextFile(
-        path.join(configPath, "languages.toml"),
-        languagesToml,
+        destPath,
+        config.toml,
       );
     }
   }
-}
-
-if (import.meta.main) {
-  await main();
-}
-
-function assert(val: unknown, msg: string): asserts val {
-  if (val === null || val === undefined) throw new Error(msg);
 }
 
 async function getConfigs() {
@@ -131,4 +109,12 @@ async function getConfigs() {
     message: "Pick a config",
     options: configs,
   });
+}
+
+function assert(val: unknown, msg: string): asserts val {
+  if (val === null || val === undefined) throw new Error(msg);
+}
+
+if (import.meta.main) {
+  await main();
 }
