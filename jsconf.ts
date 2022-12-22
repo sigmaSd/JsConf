@@ -66,13 +66,7 @@ async function main() {
 
     if (!configPath) throw "invalid path";
 
-    try {
-      await Deno.remove(configPath, { recursive: true });
-    } catch {
-      /*ignore*/
-    } finally {
-      await Deno.mkdir(configPath);
-    }
+    await ensureDir(configPath);
 
     for (const config of tomlConfigs) {
       const destPath = path.join(configPath, config.name);
