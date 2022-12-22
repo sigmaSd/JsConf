@@ -21,6 +21,10 @@ You can test drive with a helix example
 deno run -r https://deno.land/x/jsconf/jsconf.ts --config https://deno.land/x/jsconf/helix_config_example.ts
 ```
 
+## Can this be useful right now ?
+
+I use it to generate helix configuration local to a project, I have tsserver lsp and deno configurations
+
 ## TODO
 
 - [ ] Generate other formats then toml ? (lua ?)
