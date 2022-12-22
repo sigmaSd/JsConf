@@ -1,4 +1,4 @@
-import { JsConfig } from "/home/mrcool/dev/deno/jsconf/api.ts";
+import { JsConfig } from "https://deno.land/x/jsconf/api.ts";
 
 const jsConfig: JsConfig = {
   config: [
