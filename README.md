@@ -5,14 +5,21 @@ Generate configuration with javascript
 
 ## Usage
 
-- Create a config file in javascript, under $configDir/jsconf
-  - The config should have a default export of a JsConfig variable. You can get the type by importing https://deno.land/x/jsconf/api.ts?s=JsConfig
+- Create a config file in javascript, under `$configDir/jsconf`
+  - The config should have a default export of a `JsConfig` variable. You can get the type by importing https://deno.land/x/jsconf/api.ts?s=JsConfig
 
-- Now you can run jsconf `deno run -r https://deno.land/x/jsconf/jsconf.ts`
+- Now you can run `jsconf` 
+```
+deno run -r https://deno.land/x/jsconf/jsconf.ts
+```
   - It will automaticly detect configs under the aformentiod location, or you can specify a config with `--config`
 - The next part is interactive, jsconf will print the generated configuration and ask to save it, and the saving location
 
-You can also test drive with a helix example `deno run -r https://deno.land/x/jsconf/jsconf.ts --config https://deno.land/x/jsconf/helix_config_example.ts`
+## Example
+You can test drive with a helix example 
+```
+deno run -r https://deno.land/x/jsconf/jsconf.ts --config https://deno.land/x/jsconf/helix_config_example.ts
+```
 
 ## TODO
 
