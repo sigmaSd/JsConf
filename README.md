@@ -12,7 +12,7 @@ Generate configuration with javascript
 ```
 deno run -r https://deno.land/x/jsconf/jsconf.ts
 ```
-  - It will automaticly detect configs under the aformentiod location, or you can specify a config with `--config`
+  - It will automaticly detect configs under the aforementioned location, or you can specify a config with `--config`
 - The next part is interactive, jsconf will print the generated configuration and ask to save it, and the saving location
 
 ## Example
